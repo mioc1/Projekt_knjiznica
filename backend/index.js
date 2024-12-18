@@ -9,16 +9,14 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-// Povezivanje na MySQL
 const connection = mysql.createConnection({
-  host: "ucka.veleri.hr",  // Povezivanje s vašom bazom
-  user: "amioc",  // Korisničko ime
-  password: "11",  // Lozinka
+  host: "ucka.veleri.hr",
+  user: "amioc",
+  password: "11",
   database: "amioc",
   port: 3306
 });
 
-// Povezivanje na MySQL bazu
 connection.connect((err) => {
   if (err) {
     console.error("Greška prilikom povezivanja na bazu:", err.message);
@@ -27,19 +25,16 @@ connection.connect((err) => {
   console.log("Uspješno povezano na MySQL bazu!");
 });
 
-// API za dohvat svih knjiga, s filtriranjem prema id-u ili naslovu
+
 app.get("/api/knjiga", (req, res) => {
-  const { id, naslov } = req.query;  // Uzima parametre iz URL query stringa
+  const { id, naslov } = req.query;  
 
   let query;
   if (id) {
-    // Ako je poslan id, filtriraj prema id-u
     query = "SELECT * FROM knjiga WHERE id = ?";
   } else if (naslov) {
-    // Ako je poslan naslov, filtriraj prema naslovu
     query = "SELECT * FROM knjiga WHERE naslov = ?";
   } else {
-    // Ako nisu poslana ni id ni naslov, vraća sve knjige
     query = "SELECT * FROM knjiga";
   }
 
@@ -52,7 +47,6 @@ app.get("/api/knjiga", (req, res) => {
   });
 });
 
-// API za dohvat svih rezervacija
 app.get("/api/rezervirane_knjige", (req, res) => {
   const query = `
     SELECT knjiga.naslov, knjiga.autor, korisnici.ime, korisnici.prezime, rezervacije.datum_rezervacije
@@ -70,7 +64,6 @@ app.get("/api/rezervirane_knjige", (req, res) => {
   });
 });
 
-// API za dodavanje rezervacije
 app.post("/api/rezervacije", (req, res) => {
   const { korisnik_id, knjiga_id } = req.body;
 
@@ -89,7 +82,6 @@ app.post("/api/rezervacije", (req, res) => {
   });
 });
 
-// Pokreni server
 app.listen(port, () => {
   console.log(`Backend server pokrenut na http://localhost:${port}`);
 });
